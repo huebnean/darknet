@@ -1059,6 +1059,10 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             thr[t] = load_data_in_thread(args);
         }
         for (t = 0; t < nthreads && i + t - nthreads < m; ++t) {
+            // get ratio of min_bb to image size
+            int resized_min_bb_h = min_bb_h / val[t].h;
+            int resized_min_bb_w = min_bb_w / val[t].w;
+            
             const int image_index = i + t - nthreads;
             char *path = paths[image_index];
             char *id = basecfg(path);
@@ -1176,7 +1180,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                                 printf("%d TP: IoU = %f, prob = %f, class_id = %d \n", tp_for_thresh, box_iou(det_box, t), prob, class_id);
                             }
                             // just count the predicted bounding box as false positive if the bounding box size is not smaller than the minimal size
-                            else if (det_box.h >= min_bb_h && det_box.w >= min_bb_w) {
+                            else if (det_box.h >= resized_min_bb_h && det_box.w >= resized_min_bb_w) {
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
                                 printf("%d FP: IoU = %f, prob = %f, class_id = %d \n", fp_for_thresh, box_iou(det_box, t), prob, class_id);
@@ -2011,8 +2015,10 @@ void run_detector(int argc, char **argv)
     int ext_output = find_arg(argc, argv, "-ext_output");
     int save_labels = find_arg(argc, argv, "-save_labels");
     char* chart_path = find_char_arg(argc, argv, "-chart", 0);
+    // minimal size of predicted bbs to ignore objects that do not appear in the ground truth
     int min_bb_h = find_char_arg(argc, argv, "-min_bb_h", 0);
     int min_bb_w = find_char_arg(argc, argv, "-min_bb_w", 0);
+
     if (argc < 4) {
         fprintf(stderr, "usage: %s %s [train/test/valid/demo/map] [data] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
