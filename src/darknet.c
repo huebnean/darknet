@@ -1181,7 +1181,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                             else if (dets[i].bbox.h >= resized_min_bb_h && dets[i].bbox.w >= resized_min_bb_w) {
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
-                                printf("%d FP: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n", fp_for_thresh, t), prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
+                                printf("%d FP: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n", fp_for_thresh, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
                             }
                             // ignore the predicted bounding box if it is smaller than the minimal size and decrease the counter of detections
                             else {
