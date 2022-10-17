@@ -1173,19 +1173,19 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                                 ++tp_for_thresh;
                                 avg_iou_per_class[class_id] += max_iou;
                                 tp_for_thresh_per_class[class_id]++;
-                                printf("%d TP: IoU = %f, prob = %f, class_id = %d \n", tp_for_thresh, box_iou(dets[i].bbox, t), prob, class_id);
+                                printf("%d TP: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n", tp_for_thresh, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
                             }
                             // just count the predicted bounding box as false positive if the bounding box size is not smaller than the minimal size
                             else if (dets[i].bbox.h >= resized_min_bb_h && dets[i].bbox.w >= resized_min_bb_w) {
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
-                                printf("%d FP: IoU = %f, prob = %f, class_id = %d \n", fp_for_thresh, box_iou(dets[i].bbox, t), prob, class_id);
+                                printf("%d FP: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n", fp_for_thresh, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
                             }
                             // ignore the predicted bounding box if it is smaller than the minimal size and decrease the counter of detections
                             else {
                                 --detections_count;
-                                printf("%d Ignore detection: IoU = %f, prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n",
-                                    detections_count, box_iou(dets[i].bbox, t), prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
+                                printf("%d Ignore detection: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n",
+                                    detections_count, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
                             }
                         }
                     }
