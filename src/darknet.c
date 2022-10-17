@@ -1113,15 +1113,13 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             // loop over all detected objects
             int i;
             for (i = 0; i < nboxes; ++i) {
-                det_box = dets[i].bbox;
-
                 int class_id;
                 for (class_id = 0; class_id < classes; ++class_id) {
                     float prob = dets[i].prob[class_id];
                     if (prob > 0) {
                         detections_count++;
                         detections = (box_prob*)xrealloc(detections, detections_count * sizeof(box_prob));
-                        detections[detections_count - 1].b = det_box;
+                        detections[detections_count - 1].b = dets[i].bbox;
                         detections[detections_count - 1].p = prob;
                         detections[detections_count - 1].image_index = image_index;
                         detections[detections_count - 1].class_id = class_id;
@@ -1135,7 +1133,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                         {
                             box t = { truth[j].x, truth[j].y, truth[j].w, truth[j].h };
                             // printf(" IoU = %f, prob = %f, class_id = %d, truth[j].id = %d \n", box_iou(dets[i].bbox, t), prob, class_id, truth[j].id);
-                            float current_iou = box_iou(det_box, t);
+                            float current_iou = box_iou(dets[i].bbox, t);
                             // just count as true positive if the IoU is greater than the IoU threshold and the predicted class is the same as the class in the ground truth
                             if (current_iou > iou_thresh && class_id == truth[j].id) {
                                 // just count if there is no box counted yet with a higher IoU for the same object
@@ -1155,7 +1153,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                             // if object is difficult then remove detection
                             for (j = 0; j < num_labels_dif; ++j) {
                                 box t = { truth_dif[j].x, truth_dif[j].y, truth_dif[j].w, truth_dif[j].h };
-                                float current_iou = box_iou(det_box, t);
+                                float current_iou = box_iou(dets[i].bbox, t);
                                 if (current_iou > iou_thresh && class_id == truth_dif[j].id) {
                                     --detections_count;
                                     break;
@@ -1177,19 +1175,19 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                                 ++tp_for_thresh;
                                 avg_iou_per_class[class_id] += max_iou;
                                 tp_for_thresh_per_class[class_id]++;
-                                printf("%d TP: IoU = %f, prob = %f, class_id = %d \n", tp_for_thresh, box_iou(det_box, t), prob, class_id);
+                                printf("%d TP: IoU = %f, prob = %f, class_id = %d \n", tp_for_thresh, box_iou(dets[i].bbox, t), prob, class_id);
                             }
                             // just count the predicted bounding box as false positive if the bounding box size is not smaller than the minimal size
-                            else if (det_box.h >= resized_min_bb_h && det_box.w >= resized_min_bb_w) {
+                            else if (dets[i].bbox.h >= resized_min_bb_h && dets[i].bbox.w >= resized_min_bb_w) {
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
-                                printf("%d FP: IoU = %f, prob = %f, class_id = %d \n", fp_for_thresh, box_iou(det_box, t), prob, class_id);
+                                printf("%d FP: IoU = %f, prob = %f, class_id = %d \n", fp_for_thresh, box_iou(dets[i].bbox, t), prob, class_id);
                             }
                             // ignore the predicted bounding box if it is smaller than the minimal size and decrease the counter of detections
                             else {
                                 --detections_count;
                                 printf("%d Ignore detection: IoU = %f, prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n",
-                                    detections_count, box_iou(det_box, t), prob, class_id, det_box.w, det_box.h);
+                                    detections_count, box_iou(dets[i].bbox, t), prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
                             }
                         }
                     }
