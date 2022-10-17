@@ -2015,7 +2015,7 @@ void run_detector(int argc, char **argv)
     int ext_output = find_arg(argc, argv, "-ext_output");
     int save_labels = find_arg(argc, argv, "-save_labels");
     char* chart_path = find_char_arg(argc, argv, "-chart", 0);
-    
+
     // minimal size of predicted bbs to ignore objects that do not appear in the ground truth
     int min_bb_h = find_char_arg(argc, argv, "-min_bb_h", 0);
     int min_bb_w = find_char_arg(argc, argv, "-min_bb_w", 0);
