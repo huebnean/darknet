@@ -1062,7 +1062,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             // get ratio of min_bb to image size
             int resized_min_bb_h = min_bb_h / val[t].h;
             int resized_min_bb_w = min_bb_w / val[t].w;
-            
+
             const int image_index = i + t - nthreads;
             char *path = paths[image_index];
             char *id = basecfg(path);
@@ -2015,6 +2015,7 @@ void run_detector(int argc, char **argv)
     int ext_output = find_arg(argc, argv, "-ext_output");
     int save_labels = find_arg(argc, argv, "-save_labels");
     char* chart_path = find_char_arg(argc, argv, "-chart", 0);
+    
     // minimal size of predicted bbs to ignore objects that do not appear in the ground truth
     int min_bb_h = find_char_arg(argc, argv, "-min_bb_h", 0);
     int min_bb_w = find_char_arg(argc, argv, "-min_bb_w", 0);
@@ -2060,7 +2061,7 @@ void run_detector(int argc, char **argv)
     else if (0 == strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear, dont_show, calc_map, min_bb_h, min_bb_w, thresh, iou_thresh, mjpeg_port, show_imgs, benchmark_layers, chart_path);
     else if (0 == strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);
     else if (0 == strcmp(argv[2], "recall")) validate_detector_recall(datacfg, cfg, weights);
-    else if (0 == strcmp(argv[2], "map")) validate_detector_map(datacfg, cfg, weights, thresh, iou_thresh, map_points, letter_box, NULL);
+    else if (0 == strcmp(argv[2], "map")) validate_detector_map(datacfg, cfg, weights, thresh, iou_thresh, min_bb_h, min_bb_w, map_points, letter_box, NULL);
     else if (0 == strcmp(argv[2], "calc_anchors")) calc_anchors(datacfg, num_of_clusters, width, height, show);
     else if (0 == strcmp(argv[2], "draw")) {
         int it_num = 100;
