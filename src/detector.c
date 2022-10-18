@@ -1173,19 +1173,21 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
                                 ++tp_for_thresh;
                                 avg_iou_per_class[class_id] += max_iou;
                                 tp_for_thresh_per_class[class_id]++;
-                                printf("%d TP: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n", tp_for_thresh, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
+                                printf("%d TP: prob = %f, class_id = %d, bb_h = %f, bb_w = %f \n", tp_for_thresh, prob, class_id, dets[i].bbox.h, dets[i].bbox.w);
                             }
                             // just count the predicted bounding box as false positive if the bounding box size is not smaller than the minimal size
                             else if (dets[i].bbox.h >= resized_min_bb_h && dets[i].bbox.w >= resized_min_bb_w) {
                                 fp_for_thresh++;
                                 fp_for_thresh_per_class[class_id]++;
-                                printf("%d FP: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n", fp_for_thresh, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
+                                printf("%d FP: prob = %f, class_id = %d, bb_h = %f, bb_w = %f \n", fp_for_thresh, prob, class_id, dets[i].bbox.h, dets[i].bbox.w);
                             }
                             // ignore the predicted bounding box if it is smaller than the minimal size and decrease the counter of detections
                             else {
                                 --detections_count;
-                                printf("%d Ignore detection: prob = %f, class_id = %d, bb_w = %f, bb_h = %f \n",
-                                    detections_count, prob, class_id, dets[i].bbox.w, dets[i].bbox.h);
+                                if (dets[i].bbox.h < resized_min_bb_h || dets[i].bbox.w < resized_min_bb_w) {
+                                    printf("Ignore detection (min_bb_h = %f, min_bb_w = %f): prob = %f, class_id = %d, bb_h = %f, bb_w = %f \n",
+                                         resized_min_bb_h, resized_min_bb_w, prob, class_id, dets[i].bbox.h, dets[i].bbox.w);
+                                }
                             }
                         }
                     }
@@ -2013,8 +2015,8 @@ void run_detector(int argc, char **argv)
     char* chart_path = find_char_arg(argc, argv, "-chart", 0);
 
     // minimal size of predicted bbs to ignore objects that do not appear in the ground truth
-    int min_bb_h = find_char_arg(argc, argv, "-min_bb_h", 0);
-    int min_bb_w = find_char_arg(argc, argv, "-min_bb_w", 0);
+    int min_bb_h = find_int_arg(argc, argv, "-min_bb_h", 0);
+    int min_bb_w = find_int_arg(argc, argv, "-min_bb_w", 0);
     if (argc < 4) {
         fprintf(stderr, "usage: %s %s [train/test/valid/demo/map] [data] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
