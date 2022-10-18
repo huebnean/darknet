@@ -1062,6 +1062,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             // get ratio of min_bb to image size
             int resized_min_bb_h = min_bb_h / val[t].h;
             int resized_min_bb_w = min_bb_w / val[t].w;
+            printf("min_bb_h = %f, resized_min_bb_h = %f, resized_min_bb_w = %f, min_bb_w = %%f \n", min_bb_h, resized_min_bb_h, resized_min_bb_w, min_bb_w);
 
             const int image_index = i + t - nthreads;
             char *path = paths[image_index];
@@ -1243,7 +1244,6 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         pr[i] = (pr_t*)xcalloc(detections_count, sizeof(pr_t));
     }
     printf("\n detections_count = %d, unique_truth_count = %d  \n", detections_count, unique_truth_count);
-    printf("min_bb_h = %f, resized_min_bb_h = %f, resized_min_bb_w = %f, min_bb_w = %%f \n", min_bb_h, resized_min_bb_h, resized_min_bb_w, min_bb_w);
 
 
     int* detection_per_class_count = (int*)xcalloc(classes, sizeof(int));
