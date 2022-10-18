@@ -1062,6 +1062,7 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
             // get ratio of min_bb to image size
             const int resized_min_bb_h = min_bb_h / val[t].h;
             const int resized_min_bb_w = min_bb_w / val[t].w;
+            printf("original_height = %f, original_width = %f \n", val[t].h, val[t].w);
             printf("min_bb_h = %f, min_bb_w = %f, resized_min_bb_h = %f, resized_min_bb_w = %f \n", min_bb_h, min_bb_w, resized_min_bb_h, resized_min_bb_w);
 
             const int image_index = i + t - nthreads;
