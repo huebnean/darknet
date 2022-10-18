@@ -937,7 +937,7 @@ int detections_comparator(const void *pa, const void *pb)
     return 0;
 }
 
-float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float thresh_calc_avg_iou, const float iou_thresh, int min_bb_h, int min_bb_w, const int map_points, int letter_box, network *existing_net)
+float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float thresh_calc_avg_iou, const float iou_thresh, const int min_bb_h, const int min_bb_w, const int map_points, int letter_box, network *existing_net)
 {
     int j;
     list *options = read_data_cfg(datacfg);
@@ -1060,9 +1060,9 @@ float validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, floa
         }
         for (t = 0; t < nthreads && i + t - nthreads < m; ++t) {
             // get ratio of min_bb to image size
-            int resized_min_bb_h = min_bb_h / val[t].h;
-            int resized_min_bb_w = min_bb_w / val[t].w;
-            printf("min_bb_h = %f, resized_min_bb_h = %f, resized_min_bb_w = %f, min_bb_w = %%f \n", min_bb_h, resized_min_bb_h, resized_min_bb_w, min_bb_w);
+            const int resized_min_bb_h = min_bb_h / val[t].h;
+            const int resized_min_bb_w = min_bb_w / val[t].w;
+            printf("min_bb_h = %f, min_bb_w = %f, resized_min_bb_h = %f, resized_min_bb_w = %f \n", min_bb_h, min_bb_w, resized_min_bb_h, resized_min_bb_w);
 
             const int image_index = i + t - nthreads;
             char *path = paths[image_index];
